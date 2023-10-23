@@ -70,7 +70,7 @@ const store = {
    * @returns {string} - the name of the store
    */
   getName() {
-    // write your code here & return value
+    return this.name;
   },
   /**
    * Returns the inventory of the store
@@ -78,7 +78,7 @@ const store = {
    * @returns {array} - the inventory of the store
    */
   getInventory() {
-    // write your code here & return value
+    return inventory;
   },
   /**
    * Returns an arrays of most expensive items in inventory
@@ -87,7 +87,7 @@ const store = {
    * @return {array} items - the array of items that are filtered
    */
   getExpensiveItems(minPrice) {
-    // write your code here & return value
+    return inventory.filter((item) => item.price >= minPrice);
   },
   /**
    * Returns an array of item names in store
@@ -95,7 +95,7 @@ const store = {
    * @return {array} items - the array of items that are filtered
    */
   getStoreItems() {
-    // write your code here & return value
+    return inventory.map((item) => item.name);
   },
   /**
    * Returns true if the item is in the store
@@ -105,7 +105,10 @@ const store = {
    * false otherwise
    */
   isItemInStore(itemName) {
-    // write your code here & return value
+    const foundItem = inventory.find((item) => item.name === itemName);
+
+    // If an item with a matching name is found, return true; otherwise, return false
+    return foundItem !== undefined;
   },
   /**
    * Returns the price of the item
@@ -116,7 +119,12 @@ const store = {
    * must use isItemInStore() method in this object
    */
   getItemPrice(itemName) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      // Find the item with the specified name and return its price
+      const foundItem = inventory.find((item) => item.name === itemName);
+      return foundItem.price;
+    }
+    return -1;
   },
 
   /**
@@ -128,7 +136,12 @@ const store = {
    * must use isItemInStore() method in this object
    */
   getItemQuantity(itemName) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      // Find the item with the specified name and return its quantity
+      const foundItem = inventory.find((item) => item.name === itemName);
+      return foundItem.quantity;
+    }
+    return -1;
   },
 
   /**
@@ -143,7 +156,15 @@ const store = {
    * must use isItemInStore() method in this object
    */
   addItemQuantity(itemName, price, quantity) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      // Find the item with the specified name in the inventory
+      const foundItem = inventory.find((item) => item.name === itemName);
+      foundItem.quantity += quantity;
+      return foundItem.quantity;
+    }
+    const newItem = { name: itemName, price, quantity };
+    inventory.push(newItem);
+    return quantity;
   },
   /**
    * Removes a certain quantity of an item from the store
@@ -156,7 +177,23 @@ const store = {
    * must use isItemInStore() method in this object
    */
   removeItemQuantity(itemName, quantity) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      // Find the item with the specified name in the inventory
+      const foundItem = inventory.find((item) => item.name === itemName);
+
+      // Check if there is enough quantity to remove
+      if (foundItem.quantity >= quantity) {
+        // Subtract the specified quantity from the item's quantity
+        foundItem.quantity -= quantity;
+
+        // Return the updated quantity
+        return foundItem.quantity;
+      }
+      // If the quantity to remove is greater than the available quantity, return -1
+      return -1;
+    }
+    // If the item is not in the store, return -1
+    return -1;
   },
   /**
    * Returns the total of all the items in the store
@@ -165,7 +202,8 @@ const store = {
    * must use the reduce() array method
    */
   getTotalValue() {
-    // write your code here & return value
+    const totalPrice = inventory.reduce((total, item) => total + item.price * item.quantity, 0);
+    return totalPrice;
   },
 };
 
